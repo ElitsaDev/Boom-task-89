@@ -24,7 +24,7 @@ export default class Application extends EventEmitter {
     }
 
     async _load() {
-        return await fetch(this.apiUrl).then((response) => {
+        return await fetch(this.url).then((response) => {
           return response.json();
         });
       }
