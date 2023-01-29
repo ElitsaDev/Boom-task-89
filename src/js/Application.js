@@ -19,26 +19,32 @@ export default class Application extends EventEmitter {
         this.emit(Application.events.READY);
     }
 
-    _startLoading() {
-        this._loading.style.display = "block";
-    }
+    
 
     async _load() {
         return await fetch(this.url).then((response) => {
           return response.json();
         });
-      }
+    }
+
+    _startLoading() {
+        this._loading.style.display = "block";
+    }
+
+    _stopLoading() {
+        this._loading.style.display = "none";
+    }
 
     _hasNext(){
         this._load()
-        .then((response => {
+        .then((response) => {
 
             if (response.next) { 
                 this.url = response.next;
                 console.log(this.url)
                 this._create;                  
             } 
-        }));
+        });
     }
 
     _create() {
@@ -56,30 +62,9 @@ export default class Application extends EventEmitter {
                     this._stopLoading();
                     document.body.querySelector(".main").appendChild(box);
                 });
-            }).catch(err => {
-                 console.log(`Can't create...Error message: ${err}`);
-             }); 
-                
+            });
+
             this._hasNext();              
-    }
-
-    // async _load() {
-
-    //     return await fetch(this.url).then((response => {
-
-    //         if (!response.ok) {
-    //             console.log(`Can't load...Error status: ${response.status}`);
-    //             return;
-    //         }
-
-    //         const planets =  response.json();
-    //         return planets;
-
-    //     })); 
-    // }
-
-    _stopLoading() {
-        this._loading.style.display = "none";
     }
 
     _render({ name, terrain, population }) {
