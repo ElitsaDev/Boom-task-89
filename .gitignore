@@ -17,6 +17,7 @@ nbproject/*
 Thumbs.db
 
 npm-debug.log
-
+Application[myTest].js
 node_modules/
 dist/
+src/js/Application\[myTest\].js
