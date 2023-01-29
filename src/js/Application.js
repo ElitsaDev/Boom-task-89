@@ -23,6 +23,12 @@ export default class Application extends EventEmitter {
         this._loading.style.display = "block";
     }
 
+    async _load() {
+        return await fetch(this.apiUrl).then((response) => {
+          return response.json();
+        });
+      }
+
     _hasNext(){
         this._load()
         .then((response => {
@@ -57,20 +63,20 @@ export default class Application extends EventEmitter {
             this._hasNext();              
     }
 
-    async _load() {
+    // async _load() {
 
-        return await fetch(this.url).then((response => {
+    //     return await fetch(this.url).then((response => {
 
-            if (!response.ok) {
-                console.log(`Can't load...Error status: ${response.status}`);
-                return;
-            }
+    //         if (!response.ok) {
+    //             console.log(`Can't load...Error status: ${response.status}`);
+    //             return;
+    //         }
 
-            const planets =  response.json();
-            return planets;
+    //         const planets =  response.json();
+    //         return planets;
 
-        })); 
-    }
+    //     })); 
+    // }
 
     _stopLoading() {
         this._loading.style.display = "none";
