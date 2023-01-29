@@ -23,6 +23,18 @@ export default class Application extends EventEmitter {
         this._loading.style.display = "block";
     }
 
+    _hasNext(){
+        this._load()
+        .then((response => {
+
+            if (response.next) { 
+                this.url = response.next;
+                console.log(this.url)
+                this._create;                  
+            } 
+        }));
+    }
+
     _create() {
         this._load()
             .then((response) => {
@@ -35,37 +47,29 @@ export default class Application extends EventEmitter {
                         terrain: planet.terrain,
                         population: planet.population,
                     });
+                    this._stopLoading();
                     document.body.querySelector(".main").appendChild(box);
                 });
-
-                return response.results;
-
-            })
-            .then((response) => {
-
-                if (response.next) {
-                    this.url = response.next;
-                    this._create;
-                } else {
-                    this._stopLoading();
-                }
-
             }).catch(err => {
-                console.log(`Can't create...Error message: ${err}`);
-            });
+                 console.log(`Can't create...Error message: ${err}`);
+             }); 
+                
+            this._hasNext();              
     }
 
     async _load() {
 
-        const response = await fetch(this.url);
+        return await fetch(this.url).then((response => {
 
-        if (!response.ok) {
-            console.log(`Can't load...Error status: ${response.status}`);
-            return;
-        }
+            if (!response.ok) {
+                console.log(`Can't load...Error status: ${response.status}`);
+                return;
+            }
 
-        const planets = await response.json();
-        return planets;
+            const planets =  response.json();
+            return planets;
+
+        })); 
     }
 
     _stopLoading() {
