@@ -21,3 +21,4 @@ Application[myTest].js
 node_modules/
 dist/
 src/js/Application\[myTest\].js
+src/js/Application\[test\].js

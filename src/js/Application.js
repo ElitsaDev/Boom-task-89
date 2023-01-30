@@ -19,12 +19,14 @@ export default class Application extends EventEmitter {
         this.emit(Application.events.READY);
     }
 
-    
-
     async _load() {
-        return await fetch(this.url).then((response) => {
-          return response.json();
-        });
+        const response = await fetch(this.url);
+        console.log(this.url);
+        if(!response.ok){
+          console.log(`Can't load...Error status: ${response.status}`);
+          return;
+        }
+        return await response.json();
     }
 
     _startLoading() {
@@ -35,22 +37,9 @@ export default class Application extends EventEmitter {
         this._loading.style.display = "none";
     }
 
-    _hasNext(){
-        this._load()
-        .then((response) => {
-
-            if (response.next) { 
-                this.url = response.next;
-                console.log(this.url)
-                this._create;                  
-            } 
-        });
-    }
-
     _create() {
         this._load()
             .then((response) => {
-
                 response.results.forEach((planet) => {
                     const box = document.createElement("div");
                     box.classList.add("box");
@@ -62,9 +51,15 @@ export default class Application extends EventEmitter {
                     this._stopLoading();
                     document.body.querySelector(".main").appendChild(box);
                 });
-            });
-
-            this._hasNext();              
+                return response;
+            }).then((response) => {
+                    if (this.url = response.next) { 
+                        //console.log(this.url);
+                        this._create();                  
+                    } 
+            }).catch((err) => {
+                console.log(`Can't create...Error message: ${err}`);
+        });        
     }
 
     _render({ name, terrain, population }) {
